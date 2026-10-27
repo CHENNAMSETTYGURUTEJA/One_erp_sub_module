@@ -20,10 +20,7 @@ from .utils.response import error_response
 from .api.routes import (
     company,
     financial_year,
-    accounts,
-    journal_entry,
     subledger,
-    reports,
     auth,
 )
 
@@ -123,10 +120,7 @@ app.include_router(auth.router, prefix=settings.API_V1_PREFIX)
 app.include_router(company.router, prefix=settings.API_V1_PREFIX)
 app.include_router(company.router, prefix="/api", include_in_schema=False)
 app.include_router(financial_year.router, prefix=settings.API_V1_PREFIX)
-app.include_router(accounts.router, prefix=settings.API_V1_PREFIX)
-app.include_router(journal_entry.router, prefix=settings.API_V1_PREFIX)
 app.include_router(subledger.router, prefix=settings.API_V1_PREFIX)
-app.include_router(reports.router, prefix=settings.API_V1_PREFIX)
 
 
 

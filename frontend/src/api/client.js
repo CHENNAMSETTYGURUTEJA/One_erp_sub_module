@@ -108,59 +108,6 @@ class ApiClient {
   }
 
 
-  getAccounts(companyId) {
-    return this.request(`/accounts?company_id=${companyId}`);
-  }
-
-  createAccount(data) {
-    return this.request('/accounts', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-  }
-
-
-  getJournalEntries(companyId, status = null) {
-    const query = status ? `&status=${status}` : '';
-    return this.request(`/journal-entries?company_id=${companyId}${query}`);
-  }
-
-  createJournalEntry(data) {
-    return this.request('/journal-entries', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-  }
-
-  postJournalEntry(journalEntryId) {
-    return this.request(`/journal-entries/${journalEntryId}/post`, {
-      method: 'POST',
-    });
-  }
-
-  getAccountGL(accountId, companyId) {
-    return this.request(`/gl/account/${accountId}?company_id=${companyId}`);
-  }
-
-
-  getAPInvoices(companyId) {
-    return this.request(`/ap/invoices?company_id=${companyId}`);
-  }
-
-  createAPInvoice(data) {
-    return this.request('/ap/invoices', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-  }
-
-  recordAPPayment(invoiceId, amount) {
-    return this.request(`/ap/invoices/${invoiceId}/payments`, {
-      method: 'POST',
-      body: JSON.stringify({ payment_amount: amount }),
-    });
-  }
-
   getARInvoices(companyId) {
     return this.request(`/ar/invoices?company_id=${companyId}`);
   }
@@ -187,63 +134,6 @@ class ApiClient {
     });
   }
 
-  getAssets(companyId) {
-    return this.request(`/assets?company_id=${companyId}`);
-  }
-
-  createAsset(data) {
-    return this.request('/assets', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-  }
-
-  recordDepreciation(assetId, amount) {
-    return this.request(`/assets/${assetId}/depreciate`, {
-      method: 'POST',
-      body: JSON.stringify({ depreciation_amount: amount }),
-    });
-  }
-
-  getBudgets(companyId, fiscalYearId = null) {
-    const query = fiscalYearId ? `&fiscal_year_id=${fiscalYearId}` : '';
-    return this.request(`/budgets?company_id=${companyId}${query}`);
-  }
-
-  setBudget(data) {
-    return this.request('/budgets', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-  }
-
-  getGSTRecords(companyId) {
-    return this.request(`/gst?company_id=${companyId}`);
-  }
-
-  recordGST(data) {
-    return this.request('/gst', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-  }
-
-
-  getTrialBalance(companyId) {
-    return this.request(`/reports/trial-balance?company_id=${companyId}`);
-  }
-
-  getProfitAndLoss(companyId) {
-    return this.request(`/reports/profit-loss?company_id=${companyId}`);
-  }
-
-  getBalanceSheet(companyId) {
-    return this.request(`/reports/balance-sheet?company_id=${companyId}`);
-  }
-
-  getDashboardStats(companyId) {
-    return this.request(`/dashboard/stats?company_id=${companyId}`);
-  }
 }
 
 export const api = new ApiClient();
