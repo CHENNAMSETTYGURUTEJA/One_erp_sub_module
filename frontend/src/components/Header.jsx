@@ -31,19 +31,10 @@ export default function Header({
   const searchRef = useRef(null);
 
   const searchableModules = [
-    { id: 'dashboard', name: 'Executive Dashboard', cat: 'Overview' },
     { id: 'company-setup', name: 'Company Setup', cat: 'Master Data' },
-    { id: 'fiscal-years', name: 'Fiscal Years & Periods', cat: 'Master Data' },
-    { id: 'accounts', name: 'Chart of Accounts', cat: 'FICO' },
-    { id: 'journal-entries', name: 'Journal Entries & Posting', cat: 'FICO' },
-    { id: 'general-ledger', name: 'General Ledger', cat: 'FICO' },
-    { id: 'trial-balance', name: 'Trial Balance', cat: 'FICO' },
-    { id: 'ap', name: 'Accounts Payable (AP Invoices)', cat: 'Subledgers' },
-    { id: 'ar', name: 'Accounts Receivable (AR Invoices)', cat: 'Subledgers' },
-    { id: 'assets', name: 'Fixed Assets Management', cat: 'Subledgers' },
-    { id: 'budget', name: 'Budgeting & Variances', cat: 'Subledgers' },
-    { id: 'gst', name: 'GST Tax Compliance', cat: 'Taxation' },
-    { id: 'reports', name: 'P&L and Balance Sheet Reports', cat: 'Reports' },
+    { id: 'fiscal-years', name: 'Fiscal Year', cat: 'Master Data' },
+    { id: 'fiscal-periods', name: 'Fiscal Period', cat: 'Master Data' },
+    { id: 'ar', name: 'Accounts Receivable (AR)', cat: 'Subledger' },
   ];
 
   const filteredModules = searchQuery.trim()
@@ -87,7 +78,7 @@ export default function Header({
   const currentCompany = companies.find((c) => c.company_id === currentCompanyId);
 
   const currentTabLabel =
-    searchableModules.find((m) => m.id === activeTab)?.name || 'Dashboard';
+    searchableModules.find((m) => m.id === activeTab)?.name || 'Company Setup';
 
   return (
     <header className="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 sm:px-6 z-20 shrink-0 transition-colors">

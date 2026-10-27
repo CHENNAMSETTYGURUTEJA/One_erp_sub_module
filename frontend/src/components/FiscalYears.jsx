@@ -3,11 +3,14 @@ import { api } from '../api/client';
 import { Calendar, Plus, X } from 'lucide-react';
 
 export default function FiscalYears({
+  mode = 'periods',
   fiscalYears,
   currentCompanyId,
   onRefresh,
   onToast,
+  onNavigate,
 }) {
+  const isYearView = mode === 'years';
   const [modalOpen, setModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
@@ -77,40 +80,54 @@ export default function FiscalYears({
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white">Fiscal Period Management</h1>
-          <p className="text-xs text-slate-500 mt-1">Configure reporting calendars and control posting access by period.</p>
+          <h1 className="text-2xl font-extrabold text-slate-900">{isYearView ? 'Fiscal Year Management' : 'Fiscal Period Management'}</h1>
+          <p className="text-xs text-slate-500 mt-1">{isYearView ? 'Create and review the company reporting years.' : 'Review accounting periods and control posting access by period.'}</p>
         </div>
-        <button
-          onClick={() => setModalOpen(true)}
-          className="bg-sky-600 hover:bg-sky-700 text-white font-medium text-xs px-4 py-2.5 rounded-lg transition shadow-sm flex items-center gap-1.5"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Create Fiscal Year</span>
-        </button>
+        {isYearView && (
+          <button
+            onClick={() => setModalOpen(true)}
+            className="bg-sky-600 hover:bg-sky-700 text-white font-medium text-xs px-4 py-2.5 rounded-lg transition shadow-sm flex items-center gap-1.5"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Create Fiscal Year</span>
+          </button>
+        )}
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4"><div className="text-xs text-slate-500">Total periods</div><div className="mt-1 text-2xl font-bold">{allPeriods.length}</div></div>
-        <div className="rounded-xl border border-emerald-200 bg-emerald-50/70 p-4"><div className="text-xs text-emerald-700">Open periods</div><div className="mt-1 text-2xl font-bold text-emerald-800">{allPeriods.filter((p) => p.status === 'OPEN').length}</div></div>
-        <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4"><div className="text-xs text-slate-500">Closed periods</div><div className="mt-1 text-2xl font-bold">{allPeriods.filter((p) => p.status === 'CLOSED').length}</div></div>
-        <div className="rounded-xl border border-cyan-200 bg-cyan-50/70 p-4"><div className="text-xs text-cyan-800">Current reporting period</div><div className="mt-1 text-lg font-bold text-cyan-950">{currentPeriod?.period_name || 'No period for today'}</div></div>
-      </div>
+      {isYearView ? (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="rounded-xl border border-slate-200 bg-white p-4"><div className="text-xs text-slate-500">Fiscal years</div><div className="mt-1 text-2xl font-bold">{fiscalYears.length}</div></div>
+          <div className="rounded-xl border border-slate-200 bg-white p-4"><div className="text-xs text-slate-500">Accounting periods generated</div><div className="mt-1 text-2xl font-bold">{allPeriods.length}</div></div>
+          <div className="rounded-xl border border-cyan-200 bg-cyan-50/70 p-4"><div className="text-xs text-cyan-800">Current reporting period</div><div className="mt-1 text-lg font-bold text-cyan-950">{currentPeriod?.period_name || 'No period for today'}</div></div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="rounded-xl border border-slate-200 bg-white p-4"><div className="text-xs text-slate-500">Total periods</div><div className="mt-1 text-2xl font-bold">{allPeriods.length}</div></div>
+          <div className="rounded-xl border border-emerald-200 bg-emerald-50/70 p-4"><div className="text-xs text-emerald-700">Open periods</div><div className="mt-1 text-2xl font-bold text-emerald-800">{allPeriods.filter((p) => p.status === 'OPEN').length}</div></div>
+          <div className="rounded-xl border border-slate-200 bg-white p-4"><div className="text-xs text-slate-500">Closed periods</div><div className="mt-1 text-2xl font-bold">{allPeriods.filter((p) => p.status === 'CLOSED').length}</div></div>
+          <div className="rounded-xl border border-cyan-200 bg-cyan-50/70 p-4"><div className="text-xs text-cyan-800">Current reporting period</div><div className="mt-1 text-lg font-bold text-cyan-950">{currentPeriod?.period_name || 'No period for today'}</div></div>
+        </div>
+      )}
 
-      <div className="flex flex-col sm:flex-row gap-3 rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-800">
-        <input aria-label="Search periods" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search period name or number" className="flex-1 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
-        <select aria-label="Filter period status" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"><option value="ALL">All statuses</option><option value="OPEN">Open</option><option value="CLOSED">Closed</option></select>
-      </div>
+      {!isYearView && (
+        <div className="flex flex-col sm:flex-row gap-3 rounded-xl border border-slate-200 bg-white p-3">
+          <input aria-label="Search periods" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search period name or number" className="flex-1 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm" />
+          <select aria-label="Filter period status" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm"><option value="ALL">All statuses</option><option value="OPEN">Open</option><option value="CLOSED">Closed</option></select>
+        </div>
+      )}
 
       {fiscalYears.length === 0 ? (
         <div className="bg-white p-12 text-center rounded-xl border border-dashed border-slate-300">
           <Calendar className="w-10 h-10 text-slate-400 mx-auto mb-3" />
-          <p className="text-slate-500 text-sm mb-4">No Fiscal Year has been created for this company yet.</p>
-          <button
-            onClick={() => setModalOpen(true)}
-            className="bg-sky-600 text-white text-xs px-4 py-2 rounded-lg font-semibold hover:bg-sky-700 transition"
-          >
-            Create First Fiscal Year
-          </button>
+          <p className="text-slate-500 text-sm mb-4">{isYearView ? 'No fiscal year has been created for this company yet.' : 'Create a fiscal year first to generate its accounting periods.'}</p>
+          {isYearView ? (
+            <button
+              onClick={() => setModalOpen(true)}
+              className="bg-sky-600 text-white text-xs px-4 py-2 rounded-lg font-semibold hover:bg-sky-700 transition"
+            >Create First Fiscal Year</button>
+          ) : (
+            <button onClick={() => onNavigate?.('fiscal-years')} className="bg-sky-600 text-white text-xs px-4 py-2 rounded-lg font-semibold hover:bg-sky-700 transition">Go to Fiscal Year</button>
+          )}
         </div>
       ) : (
         visibleYears.map((fy) => (
@@ -121,11 +138,11 @@ export default function FiscalYears({
                 <h2 className="text-xl font-bold text-slate-900 mt-1">{fy.year_name}</h2>
                 <p className="text-xs text-slate-500">{fy.start_date} to {fy.end_date}</p>
               </div>
-              <span className="text-xs text-slate-400">{(fy.periods || []).length} accounting periods</span>
+                <span className="text-xs text-slate-400">{(fy.periods || []).length} accounting periods</span>
             </div>
 
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            {!isYearView && <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
               {fy.periods.length === 0 ? <div className="sm:col-span-2 lg:col-span-4 text-sm text-slate-500 py-6 text-center">No periods match these filters.</div> : fy.periods.map((p) => {
                 const isOpen = p.status === 'OPEN';
                 return (
@@ -160,13 +177,13 @@ export default function FiscalYears({
                   </div>
                 );
               })}
-            </div>
+            </div>}
           </div>
         ))
       )}
 
 
-      {modalOpen && (
+      {isYearView && modalOpen && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 border border-slate-200">
             <div className="flex justify-between items-center mb-4">
@@ -219,7 +236,7 @@ export default function FiscalYears({
           </div>
         </div>
       )}
-      {historyOpen && (
+      {!isYearView && historyOpen && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-lg w-full p-6 border border-slate-200 dark:border-slate-700">
             <div className="flex justify-between items-start mb-4">

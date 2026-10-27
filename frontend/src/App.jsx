@@ -3,19 +3,9 @@ import { api } from './api/client';
 import Toast from './components/Toast';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
-import Dashboard from './components/Dashboard';
 import CompanySetup from './components/CompanySetup';
 import FiscalYears from './components/FiscalYears';
-import ChartOfAccounts from './components/ChartOfAccounts';
-import JournalEntries from './components/JournalEntries';
-import GeneralLedger from './components/GeneralLedger';
-import TrialBalance from './components/TrialBalance';
-import AccountsPayable from './components/AccountsPayable';
 import AccountsReceivable from './components/AccountsReceivable';
-import FixedAssets from './components/FixedAssets';
-import Budgeting from './components/Budgeting';
-import GST from './components/GST';
-import FinancialReports from './components/FinancialReports';
 import LoginPage from './components/LoginPage';
 import ProfileModal from './components/ProfileModal';
 
@@ -27,11 +17,10 @@ export default function App() {
 
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => localStorage.getItem('oneerp_sidebar') === 'collapsed');
 
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState('company-setup');
   const [companies, setCompanies] = useState([]);
   const [currentCompanyId, setCurrentCompanyId] = useState(null);
   const [fiscalYears, setFiscalYears] = useState([]);
-  const [accounts, setAccounts] = useState([]);
   const [activePeriod, setActivePeriod] = useState(null);
   const [toasts, setToasts] = useState([]);
 
@@ -110,11 +99,7 @@ export default function App() {
 
   const loadCompanyContext = async (companyId) => {
     try {
-      const [accRes, fyRes] = await Promise.all([
-        api.getAccounts(companyId),
-        api.getFiscalYears(companyId),
-      ]);
-      setAccounts(accRes.data || []);
+      const fyRes = await api.getFiscalYears(companyId);
       const fYears = fyRes.data || [];
       setFiscalYears(fYears);
 
@@ -224,14 +209,6 @@ export default function App() {
         />
 
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 bg-slate-50 transition-colors">
-          {activeTab === 'dashboard' && (
-            <Dashboard
-              currentCompany={currentCompany}
-              onNavigate={setActiveTab}
-              onToast={addToast}
-            />
-          )}
-
           {activeTab === 'company-setup' && (
             <CompanySetup
               companies={companies}
@@ -244,6 +221,7 @@ export default function App() {
 
           {activeTab === 'fiscal-years' && (
             <FiscalYears
+              mode="years"
               fiscalYears={fiscalYears}
               currentCompanyId={currentCompanyId}
               onRefresh={() => loadCompanyContext(currentCompanyId)}
@@ -251,50 +229,14 @@ export default function App() {
             />
           )}
 
-          {activeTab === 'accounts' && (
-            <ChartOfAccounts
-              accounts={accounts}
-              currentCompanyId={currentCompanyId}
-              currentCompany={currentCompany}
-              onRefresh={() => loadCompanyContext(currentCompanyId)}
-              onToast={addToast}
-            />
-          )}
-
-          {activeTab === 'journal-entries' && (
-            <JournalEntries
-              accounts={accounts}
+          {activeTab === 'fiscal-periods' && (
+            <FiscalYears
+              mode="periods"
               fiscalYears={fiscalYears}
               currentCompanyId={currentCompanyId}
-              currentCompany={currentCompany}
               onRefresh={() => loadCompanyContext(currentCompanyId)}
               onToast={addToast}
-            />
-          )}
-
-          {activeTab === 'general-ledger' && (
-            <GeneralLedger
-              accounts={accounts}
-              currentCompanyId={currentCompanyId}
-              currentCompany={currentCompany}
-              onToast={addToast}
-            />
-          )}
-
-          {activeTab === 'trial-balance' && (
-            <TrialBalance
-              currentCompanyId={currentCompanyId}
-              currentCompany={currentCompany}
-              onToast={addToast}
-            />
-          )}
-
-          {activeTab === 'ap' && (
-            <AccountsPayable
-              currentCompanyId={currentCompanyId}
-              currentCompany={currentCompany}
-              onRefresh={() => loadCompanyContext(currentCompanyId)}
-              onToast={addToast}
+              onNavigate={setActiveTab}
             />
           )}
 
@@ -307,42 +249,6 @@ export default function App() {
             />
           )}
 
-          {activeTab === 'assets' && (
-            <FixedAssets
-              currentCompanyId={currentCompanyId}
-              currentCompany={currentCompany}
-              onRefresh={() => loadCompanyContext(currentCompanyId)}
-              onToast={addToast}
-            />
-          )}
-
-          {activeTab === 'budget' && (
-            <Budgeting
-              accounts={accounts}
-              fiscalYears={fiscalYears}
-              currentCompanyId={currentCompanyId}
-              currentCompany={currentCompany}
-              onRefresh={() => loadCompanyContext(currentCompanyId)}
-              onToast={addToast}
-            />
-          )}
-
-          {activeTab === 'gst' && (
-            <GST
-              currentCompanyId={currentCompanyId}
-              currentCompany={currentCompany}
-              onRefresh={() => loadCompanyContext(currentCompanyId)}
-              onToast={addToast}
-            />
-          )}
-
-          {activeTab === 'reports' && (
-            <FinancialReports
-              currentCompanyId={currentCompanyId}
-              currentCompany={currentCompany}
-              onToast={addToast}
-            />
-          )}
         </main>
       </div>
     </div>

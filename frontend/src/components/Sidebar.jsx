@@ -1,52 +1,20 @@
 import React from 'react';
 import {
-  LayoutDashboard,
   Building2,
   Calendar,
-  BookOpen,
-  FileSpreadsheet,
-  Scale,
-  Receipt,
+  Clock3,
   Users,
-  Truck,
-  Coins,
-  ShieldCheck,
-  BarChart3,
 } from 'lucide-react';
 
 export default function Sidebar({ activeTab, onSelectTab, collapsed, onToggleCollapse }) {
   const navSections = [
     {
-      title: 'Foundation & Setup',
+      title: 'Workspace',
       items: [
-        { id: 'dashboard', label: 'Executive Dashboard', icon: LayoutDashboard },
         { id: 'company-setup', label: 'Company Setup', icon: Building2 },
-        { id: 'fiscal-years', label: 'Fiscal Years & Periods', icon: Calendar },
-        { id: 'accounts', label: 'Chart of Accounts', icon: BookOpen },
-      ],
-    },
-    {
-      title: 'General Ledger (FICO)',
-      items: [
-        { id: 'journal-entries', label: 'Journal Entries & Posting', icon: FileSpreadsheet },
-        { id: 'general-ledger', label: 'General Ledger', icon: BookOpen },
-        { id: 'trial-balance', label: 'Trial Balance', icon: Scale },
-      ],
-    },
-    {
-      title: 'Subledgers & Operations',
-      items: [
-        { id: 'ap', label: 'Accounts Payable (AP)', icon: Receipt },
+        { id: 'fiscal-years', label: 'Fiscal Year', icon: Calendar },
+        { id: 'fiscal-periods', label: 'Fiscal Period', icon: Clock3 },
         { id: 'ar', label: 'Accounts Receivable (AR)', icon: Users },
-        { id: 'assets', label: 'Fixed Assets', icon: Truck },
-        { id: 'budget', label: 'Budgeting & Variance', icon: Coins },
-        { id: 'gst', label: 'GST Tax Compliance', icon: ShieldCheck },
-      ],
-    },
-    {
-      title: 'Financial Statements',
-      items: [
-        { id: 'reports', label: 'P&L and Balance Sheet', icon: BarChart3 },
       ],
     },
   ];
